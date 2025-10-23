@@ -12,7 +12,7 @@ SESSION_CONFIGS = [
         display_name='human AI Bargaining1 Demo',
         app_sequence=['instruction','quiz','human_AI_bargaining_Practice','human_AI_bargaining1', 'questionnaireT3','FinalResults'],
         num_demo_participants=2,
-        treatment='T2',  # 👈 添加 treatment 参数
+        treatment='T2',  # 👈 添加 treatment 参数 jdhjskhdj
     ),
     dict(
         name='human_AI_bargaining2_demo',
