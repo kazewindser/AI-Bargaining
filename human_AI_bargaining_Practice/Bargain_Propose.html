@@ -1,0 +1,109 @@
+{% extends 'global/Page.html' %}
+{% block title %}ステージ {{ stage }} - 提案{% endblock %}
+
+{% block content %}
+
+<div style="background-color: #fff3cd; border: 2px solid #ffc107; padding: 10px; margin-bottom: 15px; border-radius: 5px; text-align: center;">
+    <b>🎯 練習ラウンド(AI対戦)</b>
+</div>
+
+<h3>ステージ {{ stage }} - 提案フェーズ</h3>
+
+<p>あなたの役割: <b style="color: #2196F3;">{{ you }}</b></p>
+
+<hr>
+
+<p>この段階でのあなたの割引率: <b style="color: #f44336;">{{ my_discount }}</b></p>
+
+<p>100ポイント中、<b>{{ other }}(AI)</b>に手渡すポイントを入力してください:</p>
+
+{% formfield player.offer_points label="手渡すポイント(0-100)" %}
+
+<!-- 実時預覧区域 -->
+<div id="preview" style="background-color: #f8f9fa; padding: 15px; margin: 20px 0; border-left: 4px solid #28a745; border-radius: 5px; display: none;">
+    <h4 style="margin-top: 0; color: #28a745;">📊 提案結果のプレビュー / Offer Preview</h4>
+    <table style="width: 100%; border-collapse: collapse;">
+        <tr style="border-bottom: 2px solid #dee2e6;">
+            <th style="padding: 8px; text-align: left;">役割 / Role</th>
+            <th style="padding: 8px; text-align: right;">提案したポイント / Original Points</th>
+            <th style="padding: 8px; text-align: right;">割引率 / Discount Rate</th>
+            <th style="padding: 8px; text-align: right;">割引後のポイント / Discounted Points</th>
+        </tr>
+        <tr style="background-color: #e7f3ff;">
+            <td style="padding: 8px;"><b>あなた ({{ you }})</b></td>
+            <td style="padding: 8px; text-align: right;"><span id="you-original">-</span></td>
+            <td style="padding: 8px; text-align: right;"><span id="you-discount">-</span></td>
+            <td style="padding: 8px; text-align: right;"><strong><span id="you-discounted">-</span></strong></td>
+        </tr>
+        <tr style="background-color: #fff3cd;">
+            <td style="padding: 8px;"><b>{{ other }} (AI)</b></td>
+            <td style="padding: 8px; text-align: right;"><span id="other-original">-</span></td>
+            <td style="padding: 8px; text-align: right;"><span id="other-discount">-</span></td>
+            <td style="padding: 8px; text-align: right;"><strong><span id="other-discounted">-</span></strong></td>
+        </tr>
+    </table>
+</div>
+
+{% next_button %}
+
+<script>
+    const ENDOWMENT = parseInt("{{ endowment }}");
+    const STAGE = parseInt("{{ stage }}");
+    const YOU_ROLE = "{{ you }}";
+    const OTHER_ROLE = "{{ other }}";
+
+    const DISCOUNT_P1 = 0.6;
+    const DISCOUNT_P2 = 0.4;
+
+    function getDiscountRate(stage, role) {
+        if (stage === 1) {
+            return 1.0;
+        } else if (stage === 2) {
+            return role === "P1" ? DISCOUNT_P1 : DISCOUNT_P2;
+        } else {
+            return role === "P1" ? Math.pow(DISCOUNT_P1, 2) : Math.pow(DISCOUNT_P2, 2);
+        }
+    }
+
+    function updatePreview() {
+        const input = document.querySelector('input[name="offer_points"]');
+        const offerPoints = parseInt(input.value) || 0;
+
+        if (offerPoints < 0 || offerPoints > ENDOWMENT || input.value === '') {
+            document.getElementById('preview').style.display = 'none';
+            return;
+        }
+
+        const youOriginal = ENDOWMENT - offerPoints;
+        const otherOriginal = offerPoints;
+
+        const youDiscount = getDiscountRate(STAGE, YOU_ROLE);
+        const otherDiscount = getDiscountRate(STAGE, OTHER_ROLE);
+
+        const youDiscounted = youOriginal * youDiscount;
+        const otherDiscounted = otherOriginal * otherDiscount;
+
+        document.getElementById('you-original').textContent = youOriginal;
+        document.getElementById('you-discount').textContent = youDiscount.toFixed(2);
+        document.getElementById('you-discounted').textContent = youDiscounted.toFixed(2);
+
+        document.getElementById('other-original').textContent = otherOriginal;
+        document.getElementById('other-discount').textContent = otherDiscount.toFixed(2);
+        document.getElementById('other-discounted').textContent = otherDiscounted.toFixed(2);
+
+        document.getElementById('preview').style.display = 'block';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const input = document.querySelector('input[name="offer_points"]');
+        if (input) {
+            input.addEventListener('input', updatePreview);
+            input.addEventListener('change', updatePreview);
+            if (input.value) {
+                updatePreview();
+            }
+        }
+    });
+</script>
+
+{% endblock %}

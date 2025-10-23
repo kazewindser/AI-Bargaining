@@ -1,0 +1,29 @@
+{{ block title }}
+            <p><center><strong>説明</strong></center></p>
+{{ endblock }}
+{{ block content }}
+
+    <div>
+        これから行う実験の<b>説明</b> をよく読んでください。<br>
+        <b><span class="text-danger">スライド下</span></b>にあるボタン< >を押すと、
+        スライドを前後に進めることができます。      
+    </div>
+    <p> </p>
+
+    {{ include slide_path }}
+
+    <div id="nextbtn" class="justify-content-end mt-1" style="display: none;">
+        <button class="btn-primary btn">次へ</button>
+    </div>
+
+    <script>
+        // 秒単位で指定
+        delaytime = 2;
+        window.setTimeout(show_btn, delaytime*30000);
+        function show_btn(){
+            ele = document.getElementById("nextbtn");
+            ele.style.display = "block";
+            ele.classList.add("d-flex");
+        }
+    </script>
+{{ endblock }}

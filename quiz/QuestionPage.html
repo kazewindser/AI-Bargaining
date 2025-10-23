@@ -1,0 +1,28 @@
+{{ block title }}
+    問題 {{ question_num }} / 6
+{{ endblock }}
+
+{{ block content }}
+
+<div style="margin: 20px auto; max-width: 800px;">
+
+    <h3>問題 {{ question_num }}</h3>
+
+    <p style="font-size: 1.1em; margin: 20px 0;">{{ question_text }}</p>
+
+    <div style="margin: 20px 0;">
+        {{ for value, label in choices }}
+            <div style="margin: 10px 0;">
+                <label style="cursor: pointer; display: block; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    <input type="radio" name="answer" value="{{ value }}" required style="margin-right: 10px;">
+                    {{ label }}
+                </label>
+            </div>
+        {{ endfor }}
+    </div>
+
+    {{ next_button }}
+
+</div>
+
+{{ endblock }}

@@ -1,0 +1,135 @@
+
+
+{% load otree %}
+
+{% block title %}結果{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <div class="card-body">
+        <h3>最終支払情報</h3>
+
+        <div style="background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin-bottom: 20px; border-left: 4px solid #2196F3;">
+            <p style="margin: 0; font-size: 1.1em;">
+                <b>🎲 抽選されたラウンド: 第 {{ pay_round }} ラウンド</b>
+            </p>
+            <p style="margin: 5px 0 0 0; color: #666;">
+                あなたの役割: <b>{{ my_role }}</b>
+            </p>
+        </div>
+
+        <p>獲得した得点(割引後)：<b>{{ my_points }}</b> 点</p>
+
+        {% if payment_source == 'ai' %}
+            <p><small style="color: #666;">💡 自分と同じ役割のAIが獲得したポイントに基づいて謝金を計算する</small></p>
+        {% elif payment_source == 'fallback' %}
+            <p><small style="color: #FF9800;">⚠️ 該当するAIデータが見つからなかったため、あなた自身の収益を使用しました</small></p>
+        {% elif payment_source == 'own' %}
+            <p><small style="color: #666;">✓ あなた自身が獲得したポイントに基づいた謝金を計算する</small></p>
+        {% endif %}
+
+        <hr>
+
+        <div style="background-color: #f0f8ff; padding: 25px; border-radius: 10px; margin-top: 20px; text-align: center;">
+            <p style="font-size:1.1em; color: #555; margin-bottom: 10px;">
+                あなたが受け取る謝金は、参加謝金５００円と交渉ゲームで獲得した謝金の合計で
+            </p>
+            <p style="font-size:1.4em; margin: 10px 0;">
+                {{ my_points }} 点 × {{ multiplier }} + {{ base_bonus }} =
+            </p>
+            <p style="margin: 0;">
+                <b style="color: #4CAF50; font-size: 2em;">{{ final_payment }} 円</b>
+            </p>
+        </div>
+
+        <hr style="margin-top: 40px;">
+        <h4 style="margin-bottom: 20px;">📊 全ラウンドの詳細結果</h4>
+
+        {% if all_rounds_data %}
+            <div style="overflow-x: auto; margin-top: 15px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.9em;">
+                    <thead>
+                        <tr style="background-color: #f5f5f5;">
+                            <th style="border: 1px solid #ddd; padding: 10px; text-align: center;">ラウンド</th>
+                            <th style="border: 1px solid #ddd; padding: 10px; text-align: center;">役割</th>
+                            <th style="border: 1px solid #ddd; padding: 10px; text-align: center;">得点</th>
+                            <th style="border: 1px solid #ddd; padding: 10px; text-align: center;">ステージ</th>
+                            <th style="border: 1px solid #ddd; padding: 10px; text-align: center;">結果</th>
+                            {% if used_ai_payoff %}
+                                <th style="border: 1px solid #ddd; padding: 10px; text-align: center;">データ元</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for data in all_rounds_data %}
+                            <tr>
+                                <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">
+                                    第{{ data.round }}ラウンド
+                                    {% if used_ai_payoff %}
+                                        {% if data.round == original_selected_round and not data.is_ai %}
+                                            <span style="color: #FF9800;" title="あなたが最初に抽選されたラウンド">◆</span>
+                                        {% endif %}
+                                        {% if data.round == ai_selected_round and data.is_ai and data.participant_id == ai_participant_id %}
+                                            <span style="color: #4CAF50;" title="謝金計算に使用されたAIのラウンド">★</span>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if data.round == pay_round %}
+                                            <span style="color: #4CAF50;" title="謝金計算に使用されたラウンド">★</span>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">{{ data.role }}</td>
+                                <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">
+                                    <b>{{ data.points }}</b> 点
+                                </td>
+                                <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">
+                                    ステージ {{ data.stage }}
+                                </td>
+                                <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">
+                                    {% if data.accepted %}
+                                        <span style="color: #4CAF50;">✓ 受諾</span>
+                                    {% else %}
+                                        <span style="color: #f44336;">✗ 拒否</span>
+                                    {% endif %}
+                                </td>
+                                {% if used_ai_payoff %}
+                                    <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">
+                                        {% if data.is_ai %}
+                                            <span style="color: #2196F3; font-weight: bold;">🤖 AI (参加者{{ data.participant_id }})</span>
+                                        {% else %}
+                                            <span style="color: #666;">👤 あなた</span>
+                                        {% endif %}
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p style="text-align: center; color: #999; padding: 20px;">データがありません</p>
+        {% endif %}
+
+        <p style="margin-top: 10px; font-size: 0.85em; color: #666;">
+            {% if used_ai_payoff %}
+                <b>◆</b> マークはあなたが最初に抽選されたラウンドを示します<br>
+                <b>★</b> マークは謝金計算に実際に使用されたAIのラウンドを示します<br>
+                <b>🤖 AI</b> は他の参加者のデータ、<b>👤 あなた</b> はあなた自身のデータを示します
+            {% else %}
+                <b>★</b> マークは謝金計算に使用されたラウンドを示します
+            {% endif %}
+        </p>
+
+        <div style="margin-top: 40px; padding: 20px; background-color: #f9f9f9; border-radius: 5px;">
+            <p style="margin: 0; text-align: center; color: #666;">
+                実験にご参加いただき、誠にありがとうございました。<br>
+                お疲れ様でした！
+            </p>
+        </div>
+    </div>
+</div>
+
+{% next_button %}
+
+{% endblock %}

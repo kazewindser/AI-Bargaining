@@ -1,0 +1,36 @@
+{% extends 'global/Page.html' %}
+{% block title %}結果{% endblock %}
+
+{% block content %}
+
+<h3>第 {{ current_round }} ラウンドの結果</h3>
+
+{% if accepted %}
+    <p role="status" aria-live="polite"
+   style="background-color:#e8f5e9;border-left:4px solid #4caf50;
+          padding:12px 15px;margin:20px 0;border-radius:5px;
+          color:#2e7d32;">
+  ✓ 提案は第 {{ stage }} ステージで受け入れられました
+</p>
+{% else %}
+    <p role="alert"
+   style="background-color:#ffebee;border-left:4px solid #f44336;
+          padding:12px 15px;margin:20px 0;border-radius:5px;
+          color:#c62828;">
+  ✗ 提案は拒否されました（第 {{ stage }} ステージまで到達）
+</p>
+{% endif %}
+
+<hr>
+
+<p>最終オファー：{{ offer }} 点</p>
+
+<hr>
+
+<p style="font-size:1.2em; margin-top:15px;">
+    <b>このラウンドにおけるあなたの得点（割引後）：<span style="color:green;">{{ my_payoff }}</span> 点</b>
+</p>
+
+
+{% next_button %}
+{% endblock %}

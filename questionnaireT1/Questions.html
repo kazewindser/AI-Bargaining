@@ -1,0 +1,13 @@
+{{ block title }}
+    <p><center><strong>アンケート</strong></center></p>
+{{ endblock }}
+
+{{ block content }}
+    {{ formfield "age" }}
+    {{ formfield "gender" }}
+    {{ formfield "affiliate" }}
+    {{ formfield "rule" }}
+    {{ formfield "offer_1"}}
+    {{ formfield "offer_2"}}
+    {{ next_button }}
+{{ endblock }}

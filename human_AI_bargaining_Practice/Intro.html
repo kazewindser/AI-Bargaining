@@ -1,0 +1,42 @@
+{% extends 'global/Page.html' %}
+{% block title %}練習ラウンド(AI対戦){% endblock %}
+
+{% block content %}
+
+<div style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+    <h3 style="margin-top: 0; color: #856404;">
+        ⚠️ これは練習ラウンドです
+    </h3>
+    <p style="color: #856404; margin-bottom: 0;">
+        このラウンドの結果は最終的な報酬に<b>含まれません</b>。実験の流れを理解するための練習です。
+    </p>
+</div>
+
+<h3>実験説明</h3>
+
+<p>これから<b>AIとの交渉ゲーム</b>の練習を行います。</p>
+
+<h4>📋 基本ルール:</h4>
+<ul>
+    <li>あなたと<b style="color: #2196F3;">AI対戦相手</b>で <b>{{ endowment }}</b> ポイントを分配します</li>
+    <li>ゲーム開始時にランダムで <b>P1(最初の提案者)</b> または <b>P2(最初の回答者)</b> に割り当てられます。</li>
+    <li>各ステージで、提案者が分配案を提示し、回答者が受け入れるか拒否するかを選択します</li>
+    <li>受け入れられた場合、その分配でゲーム終了</li>
+    <li>拒否された場合、次のステージに進みます(役割が交代)</li>
+    <li>最大 <b>{{ max_stage }}</b> ステージまで交渉できます</li>
+</ul>
+
+<h4>💰 割引メカニズム :</h4>
+<p>時間が経過すると、獲得できるポイントが割引されます:</p>
+<ul>
+    <li><b>ステージ 1:</b> 割引なし (100%)</li>
+    <li><b>ステージ 2:</b> P1は60%、P2は40%</li>
+    <li><b>ステージ 3:</b> P1は36%、P2は16%</li>
+</ul>
+<hr>
+
+<p><b>準備ができたら「次へ」をクリックして練習を開始してください。</b></p>
+
+{% next_button %}
+
+{% endblock %}
