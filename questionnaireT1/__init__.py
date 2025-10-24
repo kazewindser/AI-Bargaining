@@ -44,7 +44,14 @@ class Player(BasePlayer):
         label = Lexicon.q_offer_2,
         choices = Lexicon.q_offer_2_opts
     )
-
+    offer_3 = models.IntegerField(
+        label=Lexicon.q_offer_3,
+        choices=Lexicon.q_offer_3_opts
+    )
+    offer_4 = models.IntegerField(
+        label=Lexicon.q_offer_4,
+        choices=Lexicon.q_offer_4_opts
+    )
 # PAGES
 
 class Start(Page):
@@ -54,7 +61,7 @@ def custom_export(players):
     # header row
     yield ['session', 'participant_code', 'label',  'id_in_group',
     'age','gender',
-    'affiliate','rule','offer_1','offer_2']
+    'affiliate','rule','offer_1','offer_2','offer_3','offer_4']
     for p in players:
         participant = p.participant
         session = p.session
@@ -69,7 +76,7 @@ class Questions(Page):
     form_model = 'player'
     form_fields = ['age', 'gender',
                     'affiliate','rule','offer_1',
-                    'offer_2']
+                    'offer_2','offer_3','offer_4']
     @staticmethod
     def vars_for_template(player: Player):
         return dict(

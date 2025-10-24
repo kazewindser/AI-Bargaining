@@ -4,7 +4,7 @@ SESSION_CONFIGS = [
         name='human_human_demo',
         display_name='human human Demo',
         app_sequence=['instruction','quiz','human_human_Practice','human_human','questionnaireT1', 'FinalResults'],
-        num_demo_participants=10,
+        num_demo_participants=2,
         treatment='T1',  # 👈 添加 treatment 参数
     ),
     dict(
