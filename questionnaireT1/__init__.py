@@ -50,7 +50,7 @@ class Player(BasePlayer):
     )
     offer_4 = models.IntegerField(
         label=Lexicon.q_offer_4,
-        choices=Lexicon.q_offer_4_opts
+        choices=Lexicon.q_offer_4_opts,
     )
 # PAGES
 

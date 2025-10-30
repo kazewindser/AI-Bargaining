@@ -13,7 +13,7 @@ class C(BaseConstants):
     NUM_ROUNDS = 1
 
     # 支付倍数
-    MULTIPLIER = 30
+    MULTIPLIER = 40
     BASE_BONUS = 500
     # 角色定义
     ROLE_P1 = 'P1'
