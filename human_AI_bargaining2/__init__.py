@@ -264,7 +264,7 @@ Please respond with ONLY a number between 0 and {C.ENDOWMENT}."""
                 {"role": "user", "content": prompt}
             ],
             temperature=1.0,
-            max_tokens=10
+            max_completion_tokens=10
         )
 
         offer = int(response.choices[0].message.content.strip())
