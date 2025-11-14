@@ -1,5 +1,6 @@
 from otree.api import *
 import random
+import math
 
 doc = """
 最终支付结算页面
@@ -166,6 +167,16 @@ class FinalResultsPage(Page):
         participant.my_role_in_pay_round = player.my_role_in_selected_round
 
         print(f"[FinalResultsPage] Data saved to participant for Player {participant.id_in_session}")
+
+def custom_export(players):
+    # header row
+    yield ['label', 'Final_Payoff']
+    for p in players:
+        participant = p.participant
+        FINAL_PAYOFF = int(math.ceil(p.final_payment / 10) * 10)
+        yield [
+        participant.label, FINAL_PAYOFF
+        ]
 
 
 # ==================== 辅助函数 ====================
