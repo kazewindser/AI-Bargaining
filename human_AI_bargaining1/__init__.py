@@ -257,13 +257,13 @@ Please respond with ONLY a number between 0 and {C.ENDOWMENT}."""
 
     try:
         response = client.chat.completions.create(
-            model="gpt-5-mini",
+            model="gpt-4o",
             messages=[
                 {"role": "system", "content": "You are a strategic bargaining game AI. Respond only with a number."},
                 {"role": "user", "content": prompt}
             ],
             temperature=1.0,
-            max_completion_tokens=10
+            max_tokens=10
         )
 
         offer = int(response.choices[0].message.content.strip())
@@ -344,14 +344,14 @@ Respond with ONLY one word: ACCEPT or REJECT"""
 
     try:
         response = client.chat.completions.create(
-            model="gpt-5-mini",
+            model="gpt-4o",
             messages=[
                 {"role": "system",
                  "content": "You are a strategic bargaining game AI. Respond only with ACCEPT or REJECT."},
                 {"role": "user", "content": prompt}
             ],
             temperature=1.0,
-            max_completion_tokens=10
+            max_tokens=10
         )
 
         decision_text = response.choices[0].message.content.strip().upper()
