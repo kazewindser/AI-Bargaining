@@ -63,6 +63,21 @@ LANGUAGE_CODE = 'ja'
 REAL_WORLD_CURRENCY_CODE = 'JPY'
 USE_POINTS = True
 
+# rooms
+ROOMS = [
+    dict(
+        name='pclab',
+        display_name='社研PCラボ',
+        participant_label_file='_rooms/pclab.txt',
+    ),
+    dict(name='live_demo', display_name='Room for live demo (no participant labels)'),
+    dict(
+        name='virtual_Lab',
+        display_name='Room for virtual Lab 40 subjects (sub**)',
+        participant_label_file='_rooms/virtualLab.txt',
+    )
+]
+
 DEBUG = False
 
 ADMIN_USERNAME = 'admin'
