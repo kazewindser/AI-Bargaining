@@ -267,13 +267,20 @@ Please respond with ONLY a number between 0 and {C.ENDOWMENT}."""
             max_completion_tokens=10
         )
 
-        offer = int(response.choices[0].message.content.strip())
+        raw = response.choices[0].message.content
+        print(f"[ai_propose] raw response: {repr(raw)}")
+        offer = int(raw.strip())
         # 确保在有效范围内
         offer = max(0, min(C.ENDOWMENT, offer))
 
         print(f"[ai_propose] ChatGPT AI (Role={ai_role}, Stage={stage}) proposes: {offer}")
         return offer
 
+    except ValueError as e:
+        print(f"[ai_propose] ValueError: {e}")
+        fallback_offer = random.randint(40, 60)
+        print(f"[ai_propose] Using fallback offer: {fallback_offer}")
+        return fallback_offer
     except Exception as e:
         print(f"[ai_propose] ChatGPT API Error: {e}")
         # 发生错误时使用简单的备用策略
