@@ -188,6 +188,19 @@ class Player(BasePlayer):
         label="あなたの選択"
     )
 
+    stage_1_offer = models.IntegerField(blank=True, initial=None)
+    stage_2_offer = models.IntegerField(blank=True, initial=None)
+    stage_3_offer = models.IntegerField(blank=True, initial=None)
+
+    #  新增字段：记录每个stage的回应
+    stage_1_accepted = models.BooleanField(blank=True, initial=None)
+    stage_2_accepted = models.BooleanField(blank=True, initial=None)
+    stage_3_accepted = models.BooleanField(blank=True, initial=None)
+
+    def role(self):
+        """返回玩家的固定角色（在本轮中不变）"""
+        return self.assigned_role
+
     def role(self):
         """返回玩家的固定角色（在本轮中不变）"""
         return self.assigned_role
@@ -203,6 +216,41 @@ class Player(BasePlayer):
     def my_role_in_round(self):
         """返回当前轮次的角色（用于数据验证）"""
         return self.role()
+
+
+
+   # 添加以下自定义方法用于数据导出
+    def custom_export_stage1_proposer(self):
+            """Stage 1 的提议者角色"""
+            return self.group.initial_proposer_id == 1 and self.id_in_group == 1 or \
+                self.group.initial_proposer_id == 2 and self.id_in_group == 2
+
+    def custom_export_my_stage1_offer(self):
+            """我在 Stage 1 提出的 offer（如果我是提议者）"""
+            g = self.group
+            if g.stage >= 1:
+                # 检查 Stage 1 时我是否是提议者
+                if self.assigned_role == C.ROLE_P1:  # 初始提议者
+                    return self.stage_1_offer
+            return None
+
+    def custom_export_my_stage2_offer(self):
+            """我在 Stage 2 提出的 offer（如果我是提议者）"""
+            g = self.group
+            if g.stage >= 2:
+                # Stage 2 提议者是 P2
+                if self.assigned_role == C.ROLE_P2:
+                    return self.stage_2_offer
+            return None
+
+    def custom_export_my_stage3_offer(self):
+            """我在 Stage 3 提出的 offer（如果我是提议者）"""
+            g = self.group
+            if g.stage >= 3:
+                # Stage 3 提议者是 P1
+                if self.assigned_role == C.ROLE_P1:
+                    return self.stage_3_offer
+            return None
 
 
 # ----------------- helpers -----------------
@@ -338,6 +386,14 @@ class Bargain_Propose(Page):
             print(f"[Bargain_Propose] Player {p.participant.id_in_session} "
                   f"offers {offer} points")
 
+            #  根据当前stage保存offer到对应字段
+        if g.stage == 1:
+            p.stage_1_offer = offer
+        elif g.stage == 2:
+            p.stage_2_offer = offer
+        elif g.stage == 3:
+            p.stage_3_offer = offer
+
         g.offer_locked = True
         p.accepted_offer = None
         print(f"[Bargain_Propose] Offer locked at Stage {g.stage}")
@@ -408,6 +464,14 @@ class Bargain_Respond(Page):
             decision = accepted_value
             print(f"[Bargain_Respond] Player {p.participant.id_in_session} "
                   f"{'ACCEPTS' if decision else 'REJECTS'}")
+
+            #  根据当前stage保存回应到对应字段
+            if g.stage == 1:
+                p.stage_1_accepted = decision
+            elif g.stage == 2:
+                p.stage_2_accepted = decision
+            elif g.stage == 3:
+                p.stage_3_accepted = decision
 
         if decision:
             g.accepted = True

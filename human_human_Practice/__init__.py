@@ -111,6 +111,16 @@ class Player(BasePlayer):
         label="あなたの選択"
     )
 
+    #  新增字段：记录每个stage的offer
+    stage_1_offer = models.IntegerField(blank=True, initial=None)
+    stage_2_offer = models.IntegerField(blank=True, initial=None)
+    stage_3_offer = models.IntegerField(blank=True, initial=None)
+
+    #  新增字段：记录每个stage的回应
+    stage_1_accepted = models.BooleanField(blank=True, initial=None)
+    stage_2_accepted = models.BooleanField(blank=True, initial=None)
+    stage_3_accepted = models.BooleanField(blank=True, initial=None)
+
     def role(self):
         return self.assigned_role
 
@@ -226,6 +236,14 @@ class Bargain_Propose(Page):
         g.offer_locked = True
         p.accepted_offer = None
 
+        #  根据当前stage保存offer到对应字段
+        if g.stage == 1:
+            p.stage_1_offer = offer
+        elif g.stage == 2:
+            p.stage_2_offer = offer
+        elif g.stage == 3:
+            p.stage_3_offer = offer
+
 
 class WaitForOffer(WaitPage):
     title_text = "お待ちください"
@@ -277,6 +295,7 @@ class Bargain_Respond(Page):
         else:
             decision = accepted_value
 
+
         if decision:
             g.accepted = True
             g.finished = True
@@ -299,6 +318,13 @@ class Bargain_Respond(Page):
                     player.offer_points = None
                     player.accepted_offer = None
 
+            #  根据当前stage保存回应到对应字段
+            if g.stage == 1:
+                    p.stage_1_accepted = decision
+            elif g.stage == 2:
+                    p.stage_2_accepted = decision
+            elif g.stage == 3:
+                    p.stage_3_accepted = decision
 
 class WaitAfterResponse(WaitPage):
     title_text = "お待ちください"
